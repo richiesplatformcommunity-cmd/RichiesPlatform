@@ -1128,7 +1128,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     try {
       fetch(CONFIG.MAKE_WEBHOOK_URL, {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           formType: "subscribe", fullName: name, phone: phone, email: email, track: selectedTrack,
@@ -1255,7 +1254,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       try {
         fetch(CONFIG.MAKE_WEBHOOK_URL, {
           method: "POST",
-          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             formType: "newsletter", firstName: name, email: email, track: selectedPath,
