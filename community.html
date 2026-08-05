@@ -489,8 +489,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   details.faq-item[open] summary::after { transform: rotate(45deg); }
   details.faq-item p { margin: 0 0 16px; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; }
 
+  .footer-newsletter {
+    margin-top: 56px; padding: 28px 24px; text-align: center;
+    border-radius: var(--radius-lg); background: var(--surface-2); border: 1.5px solid var(--line);
+  }
+  .footer-newsletter p { margin: 0 0 16px; font-size: 1rem; color: var(--ink); font-weight: 700; font-family: var(--font-display); }
+
   footer {
-    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
+    margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line);
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
     font-size: 0.8rem; color: var(--ink-faint);
   }
@@ -771,6 +777,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>Yes. Live sessions aren't recorded except skill trainings, posted to YouTube for attendees only.</p>
     </details>
   </section>
+
+  <div class="footer-newsletter">
+    <p>Not ready to join yet? Get RichiesPlatform updates.</p>
+    <button type="button" class="cta-link" id="footerNewsletterCta">Join the Newsletter →</button>
+  </div>
 
   <footer>
     <span>&copy; <span id="year"></span> RichiesPlatform. All rights reserved.</span>
@@ -1216,6 +1227,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     closeBtn.addEventListener("click", dismiss);
     modal.addEventListener("click", function (e) { if (e.target === modal) { dismiss(); } });
+
+    var footerCta = document.getElementById("footerNewsletterCta");
+    if (footerCta) {
+      footerCta.addEventListener("click", function () { modal.hidden = false; });
+    }
 
     function nlSetStatus(text, isError) {
       nlStatus.textContent = text;
