@@ -1009,7 +1009,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       iframe.title = "RichiesPlatform testimonial";
       iframe.allow = "accelerate-compute; autoplay; encrypted-media; picture-in-picture";
       iframe.allowFullscreen = true;
-      card.replaceWith(iframe);
+      // Swap the card's CONTENTS, not the card itself  the 16:9 frame
+      // sizing lives on .testimonial-card, so replacing the whole element
+      // would drop the iframe back to the browser's tiny default size.
+      card.classList.remove("yt");
+      card.innerHTML = "";
+      card.appendChild(iframe);
+      videoActive = true;
+      paused = true;
+      if (resumeTimer) { clearTimeout(resumeTimer); }
     });
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1027,8 +1035,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var userInteracting = false;
     var resumeTimer = null;
     var lastFrame = null;
+    // Once a testimonial video is opened, auto-scroll stays paused for
+    // good  nobody wants the carousel yanking a video they're watching
+    // out of view. Manual scrolling still works as normal.
+    var videoActive = false;
 
     function pauseAutoScroll() {
+      if (videoActive) { return; }
       paused = true;
       userInteracting = true;
       if (resumeTimer) { clearTimeout(resumeTimer); }
@@ -1041,9 +1054,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     ["wheel", "touchstart", "pointerdown"].forEach(function (evt) {
       viewport.addEventListener(evt, pauseAutoScroll, { passive: true });
     });
-    viewport.addEventListener("mouseenter", function () { paused = true; });
+    viewport.addEventListener("mouseenter", function () { if (!videoActive) { paused = true; } });
     viewport.addEventListener("mouseleave", function () {
-      if (userInteracting) { return; }
+      if (videoActive || userInteracting) { return; }
       if (resumeTimer) { clearTimeout(resumeTimer); }
       scrollPos = viewport.scrollTop;
       paused = false;
