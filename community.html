@@ -212,7 +212,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .countdown-label { display: block; margin-top: 6px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); }
 
   .testimonial-viewport {
-    position: relative; height: 512px; overflow-y: auto; overflow-x: hidden;
+    position: relative; height: clamp(420px, 92vw, 900px); overflow-y: auto; overflow-x: hidden;
     border-radius: var(--radius-lg); overscroll-behavior-y: contain; scrollbar-width: thin;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 28px, black calc(100% - 28px), transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0, black 28px, black calc(100% - 28px), transparent 100%);
@@ -222,7 +222,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .testimonial-viewport::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
   .testimonial-stack { display: flex; flex-direction: column; gap: 16px; }
   .testimonial-card {
-    flex: 0 0 auto; height: 192px; background: var(--surface); border: 1.5px solid var(--line);
+    flex: 0 0 auto; width: 100%; aspect-ratio: 16 / 9; background: var(--surface); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); box-shadow: var(--shadow-card); overflow: hidden;
     display: flex; align-items: center; justify-content: center;
   }
