@@ -871,10 +871,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     //      the link", then copy the file ID out of the share URL (the long
     //      string between /d/ and /view in
     //      https://drive.google.com/file/d/FILE_ID/view).
-    //    - Use it as: { type: "image", src: "https://drive.google.com/uc?export=view&id=FILE_ID", alt: "..." }
+    //    - Use it as: { type: "image", src: "https://drive.google.com/thumbnail?id=FILE_ID&sz=w1600", alt: "..." }
     //    - Note: this is an unofficial Google URL pattern  it can break or
     //      show a warning page without notice. If a testimonial image stops
-    //      showing, re-check it still loads directly in a browser tab.
+    //      showing, re-check it still loads directly in a browser tab. If it
+    //      still won't load, double-check the file's sharing setting is
+    //      "Anyone with the link" (not restricted) - that's the #1 cause.
     //
     // 2) VIDEOS via YouTube (Unlisted  not Public, not Private):
     //    - Upload the clip to YouTube, set visibility to "Unlisted" so it's
@@ -885,9 +887,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     //    - This shows a thumbnail in the carousel; tapping it loads the
     //      real player  same click-to-load pattern as the VSL section
     //      above, so the page stays fast even with many videos added.
-    TESTIMONIALS:  { type: "youtube", youtubeId: "D59TPTAN5PI", alt: "Testimonial from a RichiesPlatform member" }
-      // { type: "image", src: "https://drive.google.com/uc?export=view&id=YOUR_FILE_ID", alt: "Result from a RichiesPlatform member" },
-      // { type: "youtube", youtubeId: "YOUR_VIDEO_ID", alt: "Testimonial from a RichiesPlatform member" },
+    TESTIMONIALS: [
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1kbiw9bUEJJQ7qYOqikc6_8Wnbf9dZy0X&sz=w1600", alt: "Result from a RichiesPlatform member" },
+      { type: "youtube", youtubeId: "D59TPTAN5PI", alt: "Testimonial from a RichiesPlatform member" },
     ],
 
     // ---- Payment flow  pick ONE mode ----
