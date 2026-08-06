@@ -226,10 +226,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     border-radius: var(--radius-lg); box-shadow: var(--shadow-card); overflow: hidden;
     display: flex; align-items: center; justify-content: center;
   }
-  .testimonial-card img, .testimonial-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .testimonial-card img, .testimonial-card video, .testimonial-card iframe { width: 100%; height: 100%; object-fit: cover; display: block; border: 0; }
   .testimonial-card.placeholder { flex-direction: column; gap: 10px; }
   .testimonial-card.placeholder .ph-icon { width: 34px; height: 34px; color: var(--ink-faint); }
   .testimonial-card.placeholder p { margin: 0; font-size: 0.85rem; color: var(--ink-faint); }
+  .testimonial-card.yt { position: relative; cursor: pointer; }
+  .testimonial-card.yt .yt-play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.96);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  }
+  .testimonial-card.yt .yt-play svg { width: 18px; height: 18px; margin-left: 3px; fill: var(--rp-dark-blue); }
 
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(7,36,99,0.55); backdrop-filter: blur(2px);
@@ -855,13 +862,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // whole ID from a youtu.be link)  leave blank until the video is ready.
     VSL_YOUTUBE_ID: "",
 
-    // Testimonials  each entry points to an image or video file YOU host
-    // (e.g. on GitHub: upload to a repo and use the raw.githubusercontent.com
-    // URL). Add as many as you want, in any order  the carousel scrolls
-    // through all of them automatically. Leave empty to show placeholders.
+    // Testimonials  add as many as you want, in any order  the carousel
+    // scrolls through all of them automatically. Leave empty to show
+    // placeholders. Two supported types:
+    //
+    // 1) IMAGES via Google Drive:
+    //    - Upload the image to Drive, right-click it > Share > "Anyone with
+    //      the link", then copy the file ID out of the share URL (the long
+    //      string between /d/ and /view in
+    //      https://drive.google.com/file/d/FILE_ID/view).
+    //    - Use it as: { type: "image", src: "https://drive.google.com/uc?export=view&id=FILE_ID", alt: "..." }
+    //    - Note: this is an unofficial Google URL pattern  it can break or
+    //      show a warning page without notice. If a testimonial image stops
+    //      showing, re-check it still loads directly in a browser tab.
+    //
+    // 2) VIDEOS via YouTube (Unlisted  not Public, not Private):
+    //    - Upload the clip to YouTube, set visibility to "Unlisted" so it's
+    //      playable via link but doesn't show on your channel/search.
+    //    - Grab the video ID (the part after "v=", or the whole slug after
+    //      youtu.be/).
+    //    - Use it as: { type: "youtube", youtubeId: "VIDEO_ID", alt: "..." }
+    //    - This shows a thumbnail in the carousel; tapping it loads the
+    //      real player  same click-to-load pattern as the VSL section
+    //      above, so the page stays fast even with many videos added.
     TESTIMONIALS: [
-      // { type: "image", src: "https://raw.githubusercontent.com/YOUR_ORG/YOUR_REPO/main/testimonials/1.jpg", alt: "Result from a RichiesPlatform member" },
-      // { type: "video", src: "https://raw.githubusercontent.com/YOUR_ORG/YOUR_REPO/main/testimonials/2.mp4" },
+      // { type: "image", src: "https://drive.google.com/uc?export=view&id=YOUR_FILE_ID", alt: "Result from a RichiesPlatform member" },
+      // { type: "youtube", youtubeId: "YOUR_VIDEO_ID", alt: "Testimonial from a RichiesPlatform member" },
     ],
 
     // ---- Payment flow  pick ONE mode ----
@@ -957,6 +983,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (item.placeholder) {
         card.classList.add("placeholder");
         card.innerHTML = '<svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="m21 15-5-5-9 9"/></svg><p>' + item.label + '</p>';
+      } else if (item.type === "youtube") {
+        card.classList.add("yt");
+        card.dataset.ytId = item.youtubeId;
+        card.innerHTML = '<img src="https://img.youtube.com/vi/' + item.youtubeId + '/hqdefault.jpg" alt="' + (item.alt || "RichiesPlatform member testimonial") + '" loading="lazy" />' +
+          '<span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg></span>';
       } else if (item.type === "video") {
         card.innerHTML = '<video src="' + item.src + '" muted loop playsinline autoplay poster="' + (item.poster || "") + '"></video>';
       } else {
@@ -965,6 +996,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return card;
     }
     items.concat(items).concat(items).forEach(function (item) { stack.appendChild(buildCard(item)); });
+
+    // Click-to-load YouTube playback  keeps the scrolling carousel light
+    // (just thumbnails) until a visitor actually wants to watch one.
+    stack.addEventListener("click", function (e) {
+      var card = e.target.closest(".testimonial-card.yt");
+      if (!card) { return; }
+      var iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube.com/embed/" + card.dataset.ytId + "?autoplay=1";
+      iframe.title = "RichiesPlatform testimonial";
+      iframe.allow = "accelerate-compute; autoplay; encrypted-media; picture-in-picture";
+      iframe.allowFullscreen = true;
+      card.replaceWith(iframe);
+    });
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var oneSetHeight = stack.scrollHeight / 3;
