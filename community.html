@@ -267,12 +267,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   .eyebrow-wrap { margin: 0 0 18px; }
   .eyebrow {
-    position: relative; display: inline-block; font-family: var(--font-display);
+    display: inline-block; font-family: var(--font-display);
     font-weight: 600; font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--ink); margin: 0; padding-bottom: 8px;
   }
-  .eyebrow::after {
-    content: ""; position: absolute; left: 28%; right: 0; bottom: 0;
+  .eyebrow-accent { position: relative; }
+  .eyebrow-accent::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -8px;
     height: 3px; background: var(--accent); border-radius: 2px;
   }
 
@@ -523,7 +524,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </header>
 
   <section class="hero">
-    <div class="eyebrow-wrap"><p class="eyebrow">RichiesPlatform 3.0 · Community Membership</p></div>
+    <div class="eyebrow-wrap"><p class="eyebrow">RichiesPlatform 3.0 · <span class="eyebrow-accent">Community Membership</span></p></div>
     <h1>Become a <br><span style="color: #cb4473;">Digital Marketing</span> <br>Expert That Can Deliver Real Results…</h1>
     <p class="hero-ladder">Freelancers <strong>|</strong> 9-5ers <strong>|</strong> Business Owners</p>
     <p class="sub">While taking a course or joining a tech school gives you tech exposure, a mentorship community that holds you accountable to results makes all the difference. 
@@ -791,6 +792,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <summary>Can I wait for next set ?</summary>
       <p>The choice is yours , however next set starts in January. I would start now if given the opportunity.</p>
     </details>
+    <details class="faq-item">
+      <summary>Are the classes recorded?</summary>
+      <p>Skill development sessions are recorded for reference purposes  however, that isn't an excuse to skip a session.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What time do classes hold?</summary>
+      <p>Schedules will be communicated during onboarding.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Is it a lifelong community membership, or is it for a specific time period?</summary>
+      <p>The program runs for 18 weeks.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How can this community help me grow professionally?</summary>
+      <p>RichiesPlatform doesn't only focus on skill development  it also builds your mindset and positioning, putting you on the 10x route.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do I have to pay to join RichiesPlatform?</summary>
+      <p>I don't consider any payment made as a "payment"  rather, a commitment to your success. But yes, there is a fee.</p>
+    </details>
   </section>
 
   <div class="footer-newsletter">
@@ -892,26 +913,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     //      real player  same click-to-load pattern as the VSL section
     //      above, so the page stays fast even with many videos added.
     TESTIMONIALS: [
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1WCcoGXTn60549i5NxC_DABMO2Yn6iH0e=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1WCcoGXTn60549i5NxC_DABMO2Yn6iH0e&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "9TspMhmWuN8", alt: "Testimonial from Tolulope a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=19iPF2og5HtG85gtHrp248KLEXhHVnhwQ=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=19iPF2og5HtG85gtHrp248KLEXhHVnhwQ&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "1pSmIrq7P7k", alt: "Testimonial from Micheal a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1Wq3BCRvlyLmhXKV8t8R0UdS3LogzfPN0=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1Wq3BCRvlyLmhXKV8t8R0UdS3LogzfPN0&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "AVsiCx6_j9A", alt: "Testimonial from Gift a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1seh4PHJon4kkTviUfvxIcznNL0YV_7A6=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1seh4PHJon4kkTviUfvxIcznNL0YV_7A6&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "3DrcovSsBeI", alt: "Testimonial from Tosan a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1_6sIoqDZ3QVW0OhR_UIr21mqP5ol3eEU=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1_6sIoqDZ3QVW0OhR_UIr21mqP5ol3eEU&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "LQxF_WOCIcU", alt: "Testimonial from Chidera  a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1Uh0Knbb6fIFm3Jv0y9WKcxdjT_hx5h0p=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1Uh0Knbb6fIFm3Jv0y9WKcxdjT_hx5h0p&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "15fTAqr2FHo", alt: "Testimonial from Vivian a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1GCz5JojdmFaipNTJhzVONXkEoOUCc683=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1GCz5JojdmFaipNTJhzVONXkEoOUCc683&sz=w1600", alt: "Results from RichiesPlatform members" },
       { type: "youtube", youtubeId: "hAyH8TEG9wA", alt: "Testimonial from Loveth a RichiesPlatform member" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1TwIhQjDrCW0WU2Q6f8w9G_tG3e9BK4db=w1600", alt: "Results from RichiesPlatform members" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1Ijb7OVOR0Y6iWLrKL7LJrYw-xb-NTMjX=w1600", alt: "Results from RichiesPlatform members" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1Eh4Pkyc0x2-dIb2OSg2SD6MvEvlwcNyS=w1600", alt: "Results from RichiesPlatform members" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1YvpARYzhqQtFMgIV0uX0veT935_Rnbuu=w1600", alt: "Results from RichiesPlatform members" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1kIxM95ELS874bv1UGwIyNNrpWAmfVQSt=w1600", alt: "Results from RichiesPlatform members" },
-      { type: "image", src: "https://drive.google.com/thumbnail?id=1Aq5D1MYk9x8s9ypby9evmRiuGdNhh65u=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1TwIhQjDrCW0WU2Q6f8w9G_tG3e9BK4db&sz=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1Ijb7OVOR0Y6iWLrKL7LJrYw-xb-NTMjX&sz=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1Eh4Pkyc0x2-dIb2OSg2SD6MvEvlwcNyS&sz=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1YvpARYzhqQtFMgIV0uX0veT935_Rnbuu&sz=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1kIxM95ELS874bv1UGwIyNNrpWAmfVQSt&sz=w1600", alt: "Results from RichiesPlatform members" },
+      { type: "image", src: "https://drive.google.com/thumbnail?id=1Aq5D1MYk9x8s9ypby9evmRiuGdNhh65u&sz=w1600", alt: "Results from RichiesPlatform members" },
     ],
 
     // ---- Payment flow  pick ONE mode ----
