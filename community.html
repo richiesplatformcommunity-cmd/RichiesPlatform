@@ -885,7 +885,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     // YouTube video ID for the VSL (the part after "v=" in the URL, or the
     // whole ID from a youtu.be link)  leave blank until the video is ready.
-    VSL_YOUTUBE_ID: "https://youtu.be/jDwlfc3I8U4",
+    VSL_YOUTUBE_ID: "jDwlfc3I8U4",
 
     // Testimonials  add as many as you want, in any order  the carousel
     // scrolls through all of them automatically. Leave empty to show
@@ -956,14 +956,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ===================================================================== */
   var vslFrame = document.getElementById("vslFrame");
   var vslCaption = document.getElementById("vslCaption");
-  if (!CONFIG.VSL_YOUTUBE_ID) {
-    vslCaption.textContent = "Video coming soon  check back shortly.";
+  // Accepts a bare video ID OR a pasted youtu.be / youtube.com link, so
+  // pasting the wrong format here (like a full URL) can't silently break
+  // the embed the way it just did.
+  function extractYouTubeId(value) {
+    if (!value) { return ""; }
+    var trimmed = value.trim();
+    var match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=))([A-Za-z0-9_-]{11})/);
+    if (match) { return match[1]; }
+    return trimmed;
+  }
+  var vslId = extractYouTubeId(CONFIG.VSL_YOUTUBE_ID);
+  if (!vslId) {
+    vslCaption.textContent = "Video coming soon — check back shortly.";
     vslFrame.disabled = true;
     vslFrame.style.cursor = "default";
   } else {
     vslFrame.addEventListener("click", function () {
       var iframe = document.createElement("iframe");
-      iframe.src = "https://www.youtube.com/embed/" + CONFIG.VSL_YOUTUBE_ID + "?autoplay=1";
+      iframe.src = "https://www.youtube.com/embed/" + vslId + "?autoplay=1";
       iframe.title = "RichiesPlatform 3.0";
       iframe.allow = "accelerate-compute; autoplay; encrypted-media; picture-in-picture";
       iframe.allowFullscreen = true;
