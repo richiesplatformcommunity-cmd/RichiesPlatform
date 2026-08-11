@@ -190,8 +190,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     border: none; padding: 0; cursor: pointer; margin-top: 8px;
   }
   .vsl-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vsl-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .vsl-play {
-    width: 74px; height: 74px; border-radius: 50%; background: rgba(255,255,255,0.96);
+    position: relative; width: 74px; height: 74px; border-radius: 50%; background: rgba(255,255,255,0.96);
     display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     transition: transform 140ms ease;
   }
@@ -972,13 +973,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     vslFrame.disabled = true;
     vslFrame.style.cursor = "default";
   } else {
+    var vslThumb = document.createElement("img");
+    vslThumb.src = "https://img.youtube.com/vi/" + vslId + "/hqdefault.jpg";
+    vslThumb.alt = "";
+    vslThumb.loading = "lazy";
+    vslFrame.insertBefore(vslThumb, vslFrame.firstChild);
+
     vslFrame.addEventListener("click", function () {
       var iframe = document.createElement("iframe");
       iframe.src = "https://www.youtube.com/embed/" + vslId + "?autoplay=1";
       iframe.title = "RichiesPlatform 3.0";
       iframe.allow = "accelerate-compute; autoplay; encrypted-media; picture-in-picture";
       iframe.allowFullscreen = true;
-      vslFrame.replaceWith(iframe);
+      // Swap the button's CONTENTS, not the button itself — the 16:9 frame
+      // sizing lives on .vsl-frame, so replacing the whole element drops
+      // the iframe back to the browser's tiny default size.
+      vslFrame.innerHTML = "";
+      vslFrame.appendChild(iframe);
+      vslFrame.disabled = true;
+      vslFrame.style.cursor = "default";
     });
   }
 
@@ -1063,7 +1076,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       iframe.title = "RichiesPlatform testimonial";
       iframe.allow = "accelerate-compute; autoplay; encrypted-media; picture-in-picture";
       iframe.allowFullscreen = true;
-      // Swap the card's CONTENTS, not the card itself  the 16:9 frame
+      // Swap the card's CONTENTS, not the card itself — the 16:9 frame
       // sizing lives on .testimonial-card, so replacing the whole element
       // would drop the iframe back to the browser's tiny default size.
       card.classList.remove("yt");
