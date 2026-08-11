@@ -250,6 +250,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .fit-col h3 { font-size: 0.95rem; }
   .fit-col .star-list { margin-bottom: 0; }
 
+  .next-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+  .next-card {
+    display: block; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 22px 20px; box-shadow: var(--shadow-card); text-decoration: none;
+    transition: border-color 120ms ease, transform 120ms ease;
+  }
+  .next-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .next-card p { margin: 0 0 12px; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
+  .next-card .next-link { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; color: var(--accent-strong); }
+  @media (prefers-color-scheme: dark) { .next-card .next-link { color: var(--accent); } }
+  :root[data-theme="dark"] .next-card .next-link { color: var(--accent); }
+
   .founder-card {
     display: flex; gap: 22px; align-items: flex-start;
     background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
@@ -581,13 +594,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "use strict";
 
   var CONFIG = {
-    AMOUNT_NGN: 100,
-    PAYSTACK_PUBLIC_KEY: "pk_live_3799e17c9ec8ea4e016d06588b99c7cbab0a11b7",
+    AMOUNT_NGN: 50000,
+    PAYSTACK_PUBLIC_KEY: "pk_test_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY",
     MAKE_WEBHOOK_URL: "https://hook.eu1.make.com/xn4cyscw57aavz8ueuspxsyvr8txg5z9",
     // Where Paystack sends people after a successful payment  a calendar
     // booking link (Calendly, Google Calendar appointment page, etc.).
     // Replace with your real scheduling link before going live.
-    CALENDAR_URL: "https://calendly.com/richiesplatformcommunity/digital-business"
+    CALENDAR_URL: "https://calendly.com/REPLACE_WITH_YOUR_LINK/business-consultation"
   };
 
   document.getElementById("year").textContent = new Date().getFullYear();
@@ -621,21 +634,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     if (name.length < 2 || !isValidPhone(phone) || !isValidEmail(email)) { return; }
 
-    if (typeof PaystackPop === "undefined") {
-      setStatus("Payment couldn't load. Please refresh and try again.", true);
-      return;
-    }
-
-    payButton.disabled = true;
-    payButton.textContent = "Opening secure checkout…";
-    setStatus("");
-
+    // Capture the lead the moment "Pay" is clicked with valid details
+    // BEFORE touching Paystack at all. This is what catches abandoned
+    // carts: anyone who filled the form and clicked Pay is in Make.com
+    // even if Paystack fails to load, they close the checkout, or the
+    // payment never completes.
     try {
       fetch(CONFIG.MAKE_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          formType: "consultation_business", fullName: name, phone: phone, email: email,
+          formType: "consultation_business", stage: "checkout_started", fullName: name, phone: phone, email: email,
           source: document.referrer || "direct", submittedAt: new Date().toISOString()
         })
       }).catch(function () {});
@@ -643,6 +652,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     if (typeof gtag === "function") { gtag("event", "begin_checkout", { value: CONFIG.AMOUNT_NGN, currency: "NGN" }); }
     if (typeof fbq === "function") { fbq("track", "InitiateCheckout", { value: CONFIG.AMOUNT_NGN, currency: "NGN" }); }
+
+    if (typeof PaystackPop === "undefined") {
+      setStatus("Payment couldn't load. Please refresh and try again  we've saved your details so we can follow up.", true);
+      return;
+    }
+
+    payButton.disabled = true;
+    payButton.textContent = "Opening secure checkout…";
+    setStatus("");
 
     var handler = PaystackPop.setup({
       key: CONFIG.PAYSTACK_PUBLIC_KEY,
@@ -655,9 +673,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         custom_fields: [{ display_name: "Service", variable_name: "service", value: "business_consultation" }]
       },
       callback: function (response) {
-        // Client-side callback  good enough for UX/marketing events, but
-        // confirm the charge server-side too (Paystack webhook) before
-        // treating it as paid.
+        // This fires from the customer's browser once Paystack's own popup
+        // reports success. It's a reliable practical signal for separating
+        // "paid" from "started checkout" in Make.com  but it is NOT
+        // airtight proof of payment (a crashed tab or dropped connection in
+        // the split second after paying could theoretically stop this from
+        // sending, even though the charge went through). For anything
+        // where that gap matters, add Paystack's own server-side webhook
+        // as a second, unspoofable source of truth  see SETUP-README.
+        try {
+          fetch(CONFIG.MAKE_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              formType: "consultation_business", stage: "paid", fullName: name, phone: phone, email: email,
+              reference: response.reference, amount: CONFIG.AMOUNT_NGN, currency: "NGN",
+              source: document.referrer || "direct", submittedAt: new Date().toISOString()
+            })
+          }).catch(function () {});
+        } catch (err) {}
+
         if (typeof gtag === "function") {
           gtag("event", "purchase", { value: CONFIG.AMOUNT_NGN, currency: "NGN", transaction_id: response.reference });
         }
