@@ -155,6 +155,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
 
+  /* Gentle float + light sweep used on the "choose your path" style
+     card-buttons so they read as clickable at a glance. */
+  @keyframes card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes card-shimmer {
+    0% { left: -60%; }
+    42%, 100% { left: 140%; }
+  }
+
   a { color: var(--accent); }
 
   .wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
@@ -309,6 +320,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   @media (prefers-color-scheme: dark) { .hero-ladder strong { color: var(--accent); } }
   :root[data-theme="dark"] .hero-ladder strong { color: var(--accent); }
 
+  .price-badge { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
+  .price-badge-was {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink-faint);
+    text-decoration: line-through; text-decoration-color: var(--bad); text-decoration-thickness: 1.5px;
+  }
+  .price-badge-now { font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; color: var(--accent-strong); }
+  @media (prefers-color-scheme: dark) { .price-badge-now { color: var(--accent); } }
+  :root[data-theme="dark"] .price-badge-now { color: var(--accent); }
+  .price-badge-off {
+    display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem;
+    letter-spacing: 0.05em; text-transform: uppercase; color: #FFFFFF; background: var(--good);
+    border-radius: 999px; padding: 5px 11px; align-self: center;
+  }
+  .price-badge.is-centered { justify-content: center; }
+
   .mid-cta {
     margin: 56px 0; text-align: center; padding: 32px 24px;
     border-radius: var(--radius-lg); background: var(--surface-2); border: 1.5px solid var(--line);
@@ -329,12 +355,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .track-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
   @media (min-width: 620px) { .track-grid { grid-template-columns: 1fr 1fr; } }
   .track-card {
-    display: block; width: 100%; text-align: left; cursor: pointer;
+    display: block; width: 100%; text-align: left; cursor: pointer; position: relative; overflow: hidden;
     background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
     padding: 22px 20px; box-shadow: var(--shadow-card); font-family: var(--font-body); color: inherit;
     transition: border-color 120ms ease, transform 120ms ease;
+    animation: card-float 3.4s ease-in-out infinite;
   }
-  .track-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .track-grid .track-card:nth-child(2) { animation-delay: -1.7s; }
+  .track-card::after {
+    content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(115deg, transparent 0%, color-mix(in srgb, #FFFFFF 65%, transparent) 50%, transparent 100%);
+    transform: skewX(-20deg); animation: card-shimmer 4.2s ease-in-out infinite; pointer-events: none;
+  }
+  .track-grid .track-card:nth-child(2)::after { animation-delay: -2.3s; }
+  .track-card:hover { border-color: var(--accent); animation-play-state: paused; }
+  .track-card:hover::after { animation-play-state: paused; }
   .track-card .track-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); margin: 0 0 6px; }
   .track-card .track-goal { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; margin: 0 0 10px; }
   .track-card .track-link { font-size: 0.85rem; font-weight: 700; color: var(--accent-strong); }
@@ -413,16 +448,59 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .greeting[hidden] { display: none; }
 
+  #join.block { margin: 76px 0; }
+  .join-panel {
+    background: var(--surface-2); border: 2px solid var(--accent); border-radius: var(--radius-lg);
+    padding: 28px 20px; box-shadow: var(--shadow-card);
+  }
+  @media (min-width: 640px) { .join-panel { padding: 40px 36px; } }
+  .join-eyebrow {
+    display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.76rem;
+    letter-spacing: 0.07em; text-transform: uppercase; color: #FFFFFF; background: var(--accent-strong);
+    border-radius: 999px; padding: 6px 13px; margin: 0 0 14px;
+  }
+  .step-chip {
+    display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700;
+    font-size: 1rem; color: var(--ink); margin: 0 0 14px;
+  }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #FFFFFF;
+    font-size: 0.85rem; font-family: var(--font-display); font-weight: 700;
+  }
+
+  .sticky-join {
+    position: fixed; right: 18px; bottom: 18px; z-index: 40;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: #FFFFFF;
+    background: var(--accent-strong); border-radius: 999px; padding: 13px 20px;
+    text-decoration: none; box-shadow: var(--shadow-card);
+    opacity: 0; transform: translateY(8px); pointer-events: none;
+    transition: opacity 200ms ease, transform 200ms ease, background 140ms ease;
+  }
+  .sticky-join.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .sticky-join:hover { background: var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .sticky-join { transition: none; } }
+
   .path-select { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 8px; }
   @media (min-width: 560px) { .path-select { grid-template-columns: 1fr 1fr; } }
   .path-card { position: relative; display: block; cursor: pointer; }
   .path-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .path-card .card-inner {
-    display: block; position: relative;
+    display: block; position: relative; overflow: hidden;
     background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
     padding: 18px; transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    animation: card-float 3.4s ease-in-out infinite;
   }
-  .path-card:hover .card-inner { border-color: var(--accent); }
+  .path-select .path-card:nth-child(2) .card-inner { animation-delay: -1.7s; }
+  .path-card .card-inner::after {
+    content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(115deg, transparent 0%, color-mix(in srgb, #FFFFFF 65%, transparent) 50%, transparent 100%);
+    transform: skewX(-20deg); animation: card-shimmer 4.2s ease-in-out infinite; pointer-events: none;
+  }
+  .path-select .path-card:nth-child(2) .card-inner::after { animation-delay: -2.3s; }
+  .path-card:hover .card-inner { border-color: var(--accent); animation-play-state: paused; }
+  .path-card:hover .card-inner::after { animation-play-state: paused; }
   .path-card input:focus-visible ~ .card-inner { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
   .path-card input:checked ~ .card-inner { border-color: var(--accent); background: var(--accent-tint); box-shadow: var(--shadow-card); }
   .path-card .card-title { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; color: var(--ink); margin: 0 0 4px; }
@@ -517,6 +595,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PCGC5GS2"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+<a href="#join" class="sticky-join" id="stickyJoin">Join Now →</a>
 <div class="wrap">
 
   <header class="brand">
@@ -528,7 +607,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="eyebrow-wrap"><p class="eyebrow">RichiesPlatform 3.0 · <span class="eyebrow-accent">Community Membership</span></p></div>
     <h1>Become a <br><span style="color: #cb4473;">Digital Marketing</span> <br>Expert That Can Deliver Real Results…</h1>
     <p class="hero-ladder">Freelancers <strong>|</strong> 9-5ers <strong>|</strong> Business Owners</p>
-    <p class="sub">While taking a course or joining a tech school gives you tech exposure, a mentorship community that holds you accountable to results makes all the difference. 
+    <p class="price-badge" id="heroPriceBadge">
+      <span class="price-badge-was" id="heroPriceWas">₦50,000</span>
+      <span class="price-badge-now" id="heroPriceNow">₦25,000</span>
+      <span class="price-badge-off" id="heroPriceOff">50% OFF</span>
+    </p>
+    <p class="sub">While taking a course or joining a tech school gives you tech exposure, a mentorship community that holds you accountable to results makes all the difference.
       <br>RichiesPlatform is a performance-driven marketing development system designed for both aspiring digital marketers and business owners looking to grow through structured execution and real-world application.</p>
     <div class="hero-cta">
       <a href="#join" class="cta-link">Join RichiesPlatform 3.0 →</a>
@@ -560,17 +644,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <section class="block">
-    <h2>Doors close soon</h2>
-    <p class="section-sub">Join now to secure your spot in RichiesPlatform 3.0. Spaces are limited to ensure the accountability system stays tight.</p>
+    <h2>Claim Your 50% Discount Now</h2>
+    <p class="section-sub">Membership is 50% off for a limited time. Join now to lock in the discount before it ends and spaces close.</p>
     <div class="countdown-card">
-      <p class="track-goal" style="margin:0;">Onboarding closes</p>
+      <p class="price-badge is-centered" id="cdPriceBadge">
+        <span class="price-badge-was" id="cdPriceWas">₦50,000</span>
+        <span class="price-badge-now" id="cdPriceNow">₦25,000</span>
+        <span class="price-badge-off" id="cdPriceOff">50% OFF</span>
+      </p>
+      <p class="track-goal" style="margin:12px 0 0;">Discount + onboarding close in</p>
       <div class="countdown-grid" id="countdown" data-target="2026-08-30T23:59:59+01:00">
         <div class="countdown-unit"><span class="countdown-num" id="cdDays">00</span><span class="countdown-label">Days</span></div>
         <div class="countdown-unit"><span class="countdown-num" id="cdHours">00</span><span class="countdown-label">Hours</span></div>
         <div class="countdown-unit"><span class="countdown-num" id="cdMinutes">00</span><span class="countdown-label">Minutes</span></div>
         <div class="countdown-unit"><span class="countdown-num" id="cdSeconds">00</span><span class="countdown-label">Seconds</span></div>
       </div>
-      <a href="#join" class="cta-link">Join RichiesPlatform 3.0 →</a>
+      <a href="#join" class="cta-link">Claim My 50% Discount →</a>
     </div>
   </section>
 
@@ -690,10 +779,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <section class="block" id="join">
+   <div class="join-panel">
+    <p class="join-eyebrow">Register here</p>
     <h2>Join RichiesPlatform 3.0</h2>
     <p class="section-sub">Choose your path and lock in your spot below. It takes less than 2 minutes.</p>
 
-    <p class="step-label" style="font-family:var(--font-display);font-weight:700;font-size:0.95rem;color:var(--ink);margin-bottom:14px;">Step 1  Choose your path</p>
+    <p class="step-chip"><span class="step-num">1</span>Choose your path</p>
     <div class="path-select" role="radiogroup" aria-label="Choose your path">
       <label class="path-card">
         <input type="radio" name="track" value="freelancer" required />
@@ -719,7 +810,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         on this page. Shown/hidden by JS below based on CONFIG.PAYMENT_MODE.
       ===================================================================== -->
       <div id="inlinePaymentBlock">
-        <p class="step-label" style="font-family:var(--font-display);font-weight:700;font-size:0.95rem;color:var(--ink);margin:26px 0 4px;">Step 2  Your details</p>
+        <p class="step-chip" style="margin-top:26px;"><span class="step-num">2</span>Your details</p>
         <div class="fields-3">
           <div class="field" id="nameField">
             <label for="fullName">Full name</label>
@@ -740,8 +831,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="checkout-card">
           <p class="price-label">Membership fee</p>
-          <p class="price" id="priceDisplay">₦250000</p>
-          <p class="price-caption" id="priceCaption">One-time fee to join</p>
+          <p class="price" id="priceDisplay">₦25,000</p>
+          <p class="price-caption" id="priceCaption">Was ₦50,000 — 50% off, one-time fee to join</p>
           <button type="button" class="pay-cta" id="payButton">Pay &amp; Join RichiesPlatform</button>
           <p class="secure-note">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
@@ -758,9 +849,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       ===================================================================== -->
       <div id="redirectPaymentBlock" hidden>
         <div class="checkout-card" style="margin-top:26px;">
-          <p class="price-label">Membership</p>
-          <p class="price" style="font-size:1.35rem;">Continue to secure payment</p>
-          <p class="price-caption">You'll enter your details and complete payment on our secure payment page.</p>
+          <p class="price-label">Membership fee</p>
+          <p class="price" id="redirectPriceDisplay">₦25,000</p>
+          <p class="price-caption" id="redirectPriceCaption">Was ₦50,000 — 50% off. You'll enter your details and complete payment on our secure payment page.</p>
           <button type="button" class="pay-cta" id="redirectPayButton">Continue to Payment →</button>
           <p class="secure-note">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
@@ -769,6 +860,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
     </div>
+   </div>
   </section>
 
   <section class="block">
@@ -869,9 +961,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      CONFIG  edit these before going live
   ===================================================================== */
   var CONFIG = {
-    // Set to 0 until the membership fee is finalized;  the Pay button
-    // stays disabled and shows "coming soon" until this is a real number.
-    AMOUNT_NGN: 0,
+    // Current membership fee (the discounted price people actually pay).
+    // Set to 0 to fall back to a "coming soon" state that disables the Pay
+    // button until a real number is set.
+    AMOUNT_NGN: 25000,
+
+    // Full price shown struck through next to AMOUNT_NGN so the discount is
+    // visible everywhere the price appears. Set equal to AMOUNT_NGN (or 0)
+    // to hide the "was / % off" messaging once there's no discount running.
+    ORIGINAL_AMOUNT_NGN: 50000,
 
     // Paystack PUBLIC key (starts with pk_live_ / pk_test_). Safe to expose
     // client-side  never put a secret key (sk_...) in this file.
@@ -1185,6 +1283,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var statusMsg = document.getElementById("statusMsg");
   var priceDisplay = document.getElementById("priceDisplay");
   var priceCaption = document.getElementById("priceCaption");
+  var redirectPriceDisplay = document.getElementById("redirectPriceDisplay");
+  var redirectPriceCaption = document.getElementById("redirectPriceCaption");
+  var redirectPayButton = document.getElementById("redirectPayButton");
+  var heroPriceBadge = document.getElementById("heroPriceBadge");
+  var heroPriceWas = document.getElementById("heroPriceWas");
+  var heroPriceNow = document.getElementById("heroPriceNow");
+  var heroPriceOff = document.getElementById("heroPriceOff");
+  var cdPriceBadge = document.getElementById("cdPriceBadge");
+  var cdPriceWas = document.getElementById("cdPriceWas");
+  var cdPriceNow = document.getElementById("cdPriceNow");
+  var cdPriceOff = document.getElementById("cdPriceOff");
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -1195,16 +1304,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   var selectedTrack = null;
   var feeIsSet = CONFIG.AMOUNT_NGN > 0;
+  var hasDiscount = feeIsSet && CONFIG.ORIGINAL_AMOUNT_NGN > CONFIG.AMOUNT_NGN;
 
-  if (!usingRedirect) {
-    if (feeIsSet) {
-      priceDisplay.textContent = "₦" + CONFIG.AMOUNT_NGN.toLocaleString("en-NG");
+  /* ---- Price display  hero badge, countdown badge, inline checkout card,
+     redirect checkout card. Everything reads from CONFIG.AMOUNT_NGN /
+     CONFIG.ORIGINAL_AMOUNT_NGN above, so the price only needs updating in
+     one place. ---- */
+  if (feeIsSet) {
+    var nowText = "₦" + CONFIG.AMOUNT_NGN.toLocaleString("en-NG");
+    heroPriceNow.textContent = nowText;
+    cdPriceNow.textContent = nowText;
+    priceDisplay.textContent = nowText;
+    redirectPriceDisplay.textContent = nowText;
+
+    if (hasDiscount) {
+      var wasText = "₦" + CONFIG.ORIGINAL_AMOUNT_NGN.toLocaleString("en-NG");
+      var pctOff = Math.round((1 - CONFIG.AMOUNT_NGN / CONFIG.ORIGINAL_AMOUNT_NGN) * 100);
+      heroPriceWas.textContent = wasText;
+      heroPriceOff.textContent = pctOff + "% OFF";
+      cdPriceWas.textContent = wasText;
+      cdPriceOff.textContent = pctOff + "% OFF";
+      priceCaption.textContent = "Was " + wasText + " — " + pctOff + "% off, one-time fee to join";
+      redirectPriceCaption.textContent = "Was " + wasText + " — " + pctOff + "% off. You'll enter your details and complete payment on our secure payment page.";
     } else {
-      priceDisplay.textContent = "TBA";
-      priceCaption.textContent = "Membership fee coming soon  check back shortly.";
-      payButton.disabled = true;
-      payButton.textContent = "Membership Fee Coming Soon";
+      heroPriceWas.hidden = true;
+      heroPriceOff.hidden = true;
+      cdPriceBadge.hidden = true;
+      priceCaption.textContent = "One-time fee to join";
+      redirectPriceCaption.textContent = "One-time fee. You'll enter your details and complete payment on our secure payment page.";
     }
+  } else {
+    heroPriceBadge.hidden = true;
+    cdPriceBadge.hidden = true;
+    priceDisplay.textContent = "TBA";
+    priceCaption.textContent = "Membership fee coming soon — check back shortly.";
+    payButton.disabled = true;
+    payButton.textContent = "Membership Fee Coming Soon";
+    redirectPriceDisplay.textContent = "TBA";
+    redirectPriceCaption.textContent = "Membership fee coming soon — check back shortly.";
+    redirectPayButton.disabled = true;
+    redirectPayButton.textContent = "Membership Fee Coming Soon";
   }
 
   radios.forEach(function (radio) {
@@ -1328,6 +1467,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   });
 
   /* =====================================================================
+     Sticky "Join Now" button  a constant reminder of where to register
+     while scrolling through long content-only stretches of the page. It
+     hides itself whenever ANY other "Join" / "Pay" / "Claim" button is
+     already visible on screen, so it never sits on top of one (the
+     countdown section's own CTA, the hero CTA, etc.).
+  ===================================================================== */
+  (function initStickyJoin() {
+    var btn = document.getElementById("stickyJoin");
+    var ctaEls = document.querySelectorAll(".cta-link, .pay-cta");
+    if (!btn || !ctaEls.length || typeof IntersectionObserver === "undefined") { return; }
+
+    var visible = new Set();
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { visible.add(entry.target); } else { visible.delete(entry.target); }
+      });
+      btn.classList.toggle("is-visible", visible.size === 0);
+    }, { threshold: 0.2 });
+    ctaEls.forEach(function (el) { observer.observe(el); });
+  })();
+
+  /* =====================================================================
      Newsletter popup  first name, email, path. Sends to the same
      Make.com webhook as the join form, tagged formType: "newsletter".
   ===================================================================== */
@@ -1399,10 +1560,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       window.setTimeout(dismiss, 1800);
     });
 
-    try {
-      if (sessionStorage.getItem(SEEN_KEY)) { return; }
-    } catch (err) {}
-    window.setTimeout(function () { modal.hidden = false; }, 30000);
+    // Auto-popup is turned OFF for now (per request). The modal still opens
+    // manually from the "Join the Newsletter" footer button above. To turn
+    // the automatic popup back on later, uncomment the block below.
+    // try {
+    //   if (sessionStorage.getItem(SEEN_KEY)) { return; }
+    // } catch (err) {}
+    // window.setTimeout(function () { modal.hidden = false; }, 30000);
   })();
 })();
 </script>
